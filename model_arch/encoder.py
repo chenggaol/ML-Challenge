@@ -8,6 +8,14 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 
+#What this layer needs to learn: need to learn spacial/temporal patterns
+
+"""
+CNN encoder:
+Benefits:
+Tradeoffs:
+# parameters:
+"""
 
 @dataclass
 class CNNConfig:
@@ -61,6 +69,13 @@ class CNNEncoder(nn.Module):
         return x.unsqueeze(1)# [B, 1, embedding_dim]
 
 
+"""
+Transformer encoder:
+Benefits:
+Tradeoffs:
+# parameters:
+"""
+
 @dataclass
 class TransformerConfig:
     input_channels: int = 9
@@ -82,7 +97,7 @@ class TransformerEncoder(nn.Module):
         super().__init__()
         self.input_embedding = nn.Linear(config.input_channels,config.d_model) #project the 9 sensor readings into more dim
         self.position_encoder = nn.Parameter(torch.zeros(config.sequence_length, config.d_model))
-        self.transformer_layer = nn.TransformerEncoderLayer(
+        transformer_layer = nn.TransformerEncoderLayer(
             d_model = config.d_model,
             nhead = config.num_heads,
             dim_feedforward = config.ffn_dim,
@@ -90,7 +105,7 @@ class TransformerEncoder(nn.Module):
             batch_first = True #dim 0 = B
         ) 
 
-        self.transformer = nn.TransformerEncoder(self.transformer_layer, num_layers = config.num_layers)
+        self.transformer = nn.TransformerEncoder(transformer_layer, num_layers = config.num_layers)
         self.pool = nn.AdaptiveAvgPool1d(1)
         self.project = nn.Linear(config.d_model,config.embedding_dim)
 

@@ -37,7 +37,7 @@ direct sensor classifier using the same encoder architecture.
 ## Reproducing the results
 
 All three runs below use `--seed 0`. Hyperparameters (`--encoder cnn --lr 3e-4
---batch_size 16 --lr_scheduler cosine`) were chosen by a greedy sequential
+--batch_size 16 --lr_scheduler cosine`) were chosen by a hyperparameter
 sweep over the direct classifier — see [Hyperparameter sweep](#hyperparameter-sweep)
 below.
 
@@ -79,13 +79,15 @@ Both `train.py` runs also save loss/F1 curves to `graphs/<name>/`.
 | Context model with shuffled embeddings | 0.1657 |
 
 The shuffled-embedding F1 (0.1657) is close to the chance level for 6
-balanced classes (1/6 ≈ 0.167), and the drop from 0.9050 is large — evidence
+balanced classes (1/6 ≈ 0.167), and the drop from 0.9050 is large. This is evidence
 that the context model's prediction genuinely depends on the specific sensor
 window it's given, not on a shortcut in the fixed prompt text.
 
+Trained checkpoints and training-curve visualizations are available [here](https://drive.google.com/drive/folders/1lO17o8uodqo-QP1evluENcR4apok43kA?usp=sharing) (not committed to the repo — see [Repo structure](#repo-structure) for why).
+
 ## Hyperparameter sweep
 
-The hyperparameters used above came from a greedy sequential sweep (one
+The hyperparameters used above came from a sequential sweep (one
 parameter group at a time, most important first, keeping whichever value won
 on **validation** macro-F1 before moving to the next group):
 
@@ -106,6 +108,6 @@ model_arch/
 train.py                # models, training loop, checkpointing, plotting
 test.py                 # loads a checkpoint, reports test F1, runs the shuffle check
 param_sweep.py          # greedy hyperparameter sweep over train.py
-checkpoints/            # saved weights, <name>.pt
+checkpoints/            # saved weights, <name>.pt (not committed - see note below)
 graphs/                 # saved training curves, <name>/*.png
 ```

@@ -1,15 +1,11 @@
-"""Greedy sequential hyperparameter sweep over train.py.
+"""Sequential hyperparameter sweep over train.py.
 
-Parameters are swept one group at a time, most important first. Within a
-group, every candidate is tried while all previously-swept groups stay
-fixed at whatever won their own stage; the winner (by validation macro-F1,
-never test) is locked in before moving to the next group. This is a greedy
-coordinate search, not a full grid search -- it costs (sum of candidates
-per stage) runs instead of (product of candidates per stage) runs.
+parameters swept one group at a time, within group the highest macro-f1 score moves on
+greedy coordinate search, not full grid
 
-#parameters which are swept from important to least important:
-#encoder arch(cnn, transformer), projector arch(linear,mlp), lr(3e-4,1e-2,1e-1)
-#noise(true,false), batch_size(16,64), scheduler type(cosine,step)
+parameters which are swept from important to least important:
+encoder arch(cnn, transformer), projector arch(linear,mlp), lr(3e-4,1e-2,1e-1)
+noise(true,false), batch_size(16,64), scheduler type(cosine,step)
 """
 
 import argparse

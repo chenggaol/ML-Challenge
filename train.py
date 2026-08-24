@@ -35,12 +35,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train the HAR sensor encoder.")
     
     # model
-    # note: sensor-dependence check reuses a trained context model at eval time
-    # (shuffled embeddings, no retraining) so it isn't a build_model option here
     parser.add_argument("--name", type=str, required=True, help="name of the run")
     parser.add_argument("--model", choices=["direct", "context"], default="direct")
     parser.add_argument("--encoder", choices=["cnn", "transformer"], default="cnn")
     parser.add_argument("--projector", choices=["linear", "mlp"], default="linear")
+    parser.add_argument("--augment", action="store_true", help="apply Gaussian noise augmentation to training windows")
 
     # optimizer
     parser.add_argument("--lr", type=float, default=0.01)
@@ -241,10 +240,11 @@ def visualize(train_loss, val_loss, val_f1, eval_freq, save_root_path):
     plt.close()
 
     plt.figure()
-    plt.plot(val_epochs, val_f1)
+    plt.plot([0, *val_epochs], [0, *val_f1])
     plt.xlabel("epoch")
     plt.ylabel("validation macro-F1")
     plt.title("validation macro-F1")
+    plt.ylim(0, 1)
     plt.savefig(save_root_path / "val_f1.png")
     plt.close()
 
@@ -256,7 +256,7 @@ def main() -> None:
     torch.manual_seed(args.seed)
 
     #load datasets/models/everything else
-    train_loader,val_loader,test_loader = create_dataloaders(batch_size = args.batch_size, num_workers = args.num_workers)
+    train_loader,val_loader,test_loader = create_dataloaders(batch_size = args.batch_size, num_workers = args.num_workers, add_noise = args.augment)
     model = build_model(args).to(device)
 
     optimizer = build_optimizer(model, args)
