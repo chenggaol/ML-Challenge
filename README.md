@@ -24,10 +24,6 @@ direct sensor classifier using the same encoder architecture.
    pip install torch --index-url https://download.pytorch.org/whl/cu126
    ```
 
-   Plain `pip install torch` also works but installs a CPU-only build on
-   Windows — training will run, just much slower, especially the
-   context-embedding model.
-
 4. Install the remaining dependencies:
 
    ```
